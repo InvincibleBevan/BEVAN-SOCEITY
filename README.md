@@ -5,7 +5,7 @@
 <div class = "repo" align = "center">
  
 <a href = "#">
-<img src = "https://files.catbox.moe/jzl4bu.jpg"  width="300" height="200">
+<img src = "https://files.catbox.moe/5pat3i.jpg"  width="300" height="200">
 </img>
  <p align="center">
   <a href="#"><img src="http://readme-typing-svg.herokuapp.com?color=ff00ab&center=true&vCenter=true&multiline=false&lines=INFINITE-MD+MD+WHATSAPP+BOT+MD" alt="">
@@ -25,6 +25,9 @@
 > To deploy, generate your session ID from the link below:
 <p align="left">
   <a href="https://infinite-md-session-genratoror.onrender.com/?">
+    <img > To deploy, generate your session ID from the link below:
+<p align="left">
+  <a href="https://infinite-md-session-generator.onrender.com//?">
     <img src="https://img.shields.io/badge/%F0%9F%9A%80%20GET%20PAIR%20CODE%20WEB-ffcc00?style=for-the-badge"/>
   </a>
 </p>
