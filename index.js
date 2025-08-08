@@ -218,11 +218,19 @@ async function connectToWA() {
         m.react(randomReaction);
       }
     }
+    // ... (previous code remains unchanged above)
 
     // Place command handler logic here...
     // Example:
     // if (isCmd && command === "menu") {
     //   reply("Here is your menu...");
+    // }
+
+    // ===================== COMMAND HANDLER =====================
+    if (isCmd) {
+      switch (plugin)
+    }
+// ... (rest of connectToWA function and file remains unchanged) 
     // }
   });
 }
