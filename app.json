@@ -16,13 +16,13 @@
     "ALIVE_IMG": {
       "description": "paste your image url if you don't have you can use this public url.",
       "required": true,
-      "value": "your image url"
+      "value": "https://files.catbox.moe/jzl4bu.jpg"
     }, 
     
     "ALIVE_MSG": {
       "description": "paste your alive message hear.",
       "required": true,
-      "value": "HI DEAR IM ONLINE.!!♻️"
+      "value": "INFINITE-MD IS ONLINE ✅"
     },
     
     "PREFIX": {
