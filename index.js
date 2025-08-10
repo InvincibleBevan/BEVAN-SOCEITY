@@ -69,6 +69,25 @@ app.listen(port, () => {
   console.log(`Express server listening on port ${port}`);
 });
 
+// ==================== Plugins Loader ====================
+let plugins = {};
+function loadPlugins() {
+  plugins = {}; // clear before loading
+  fs.readdirSync('./plugins/').forEach((pluginFile) => {
+    if (path.extname(pluginFile).toLowerCase() === '.js') {
+      try {
+        const plugin = require('./plugins/' + pluginFile);
+        // Use .help or .command property for command name, fallback to filename
+        let commandName = plugin.command || plugin.help || pluginFile.replace(/\.js$/, "");
+        plugins[commandName.toLowerCase()] = plugin;
+      } catch (e) {
+        console.error(`Error loading plugin ${pluginFile}:`, e);
+      }
+    }
+  });
+}
+loadPlugins();
+
 async function connectToWA() {
   console.log('CONNECTING INFINITE-MD 🧬...');
   const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, 'sessions'));
@@ -91,11 +110,7 @@ async function connectToWA() {
       }
     } else if (connection === 'open') {
       console.log('♻️ INSTALLING PLUGINS FILES PLEASE WAIT... 🪄');
-      fs.readdirSync('./plugins/').forEach((plugin) => {
-        if (path.extname(plugin).toLowerCase() === '.js') {
-          require('./plugins/' + plugin);
-        }
-      });
+      loadPlugins(); // Reload plugins on connect
       console.log('PLUGINS FILES INSTALL SUCCESSFULLY ✅');
       console.log('INFINITE-MD CONNECTED TO WHATSAPP ENJOY ✅');
 
@@ -298,14 +313,37 @@ async function connectToWA() {
 
     // ===================== COMMAND HANDLER =====================
     if (isCmd) {
-      // Example: menu command
-      if (command === 'menu') {
-        reply('Here is your menu...');
+      // Execute plugin if available
+      if (plugins[command]) {
+        try {
+          // Pass common context to plugin
+          await plugins[command].run({
+            conn,
+            m,
+            mek,
+            args,
+            q,
+            reply,
+            from,
+            sender,
+            isOwner,
+            isAdmins,
+            isBotAdmins,
+            groupMetadata,
+            groupName,
+            participants,
+            groupAdmins,
+            quoted,
+            plugins,
+            config
+          });
+        } catch (err) {
+          console.error(`Error running command "${command}":`, err);
+          reply('❌ Error executing command. Please contact the owner.');
+        }
+      } else {
+        reply(`❌ Command *${command}* not found.`);
       }
-      // Add more commands below as needed
-      // if (command === 'rank') {
-      //   rankCommand.run({ conn, m, args, reply }); // Example structure
-      // }
     }
   });
 }
