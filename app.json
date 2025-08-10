@@ -1,7 +1,7 @@
 {
   "name": "INFINITE-MD",
   "description": "ᴊᴀᴠᴀsᴄʀɪᴘᴛ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ ᴄʀᴇᴀᴛᴇᴅ ʙʏ your BEVAN SOCEITY",
-  "logo": "https://files.catbox.moe/jzl4bu.jpg",
+  "logo": "https://url.bwmxmd.online/Adams.zhps3294.jpg",
   "keywords": ["bot"],
   "success_url": "/",
 
@@ -16,7 +16,7 @@
     "ALIVE_IMG": {
       "description": "paste your image url if you don't have you can use this public url.",
       "required": true,
-      "value": "https://files.catbox.moe/jzl4bu.jpg"
+      "value": "https://url.bwmxmd.online/Adams.zhps3294.jpg"
     }, 
     
     "ALIVE_MSG": {
