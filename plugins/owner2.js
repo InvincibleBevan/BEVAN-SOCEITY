@@ -14,7 +14,7 @@ async (conn, mek, m, { from }) => {
     try {
         // Owner's contact info
         const ownerNumber = '+254797827405'; // Replace this with the actual owner number
-        const ownerName = 'Bevan; // Replace this with the owner's name
+        const ownerName = 'Bevan; // Replace this with the owner name
         const organization = 'Bevan soceity'; // Optional: replace with the owner's organization
 
         // Create a vCard (contact card) for the owner
