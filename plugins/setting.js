@@ -60,7 +60,7 @@ cmd({
 │
 ╰──────────────────────────╯
 
-*🌟DEVELOPED BY Your Name🌟*
+*🌟DEVELOPED BY BEVAN SOCEITY🌟*
 `;
 
         // Send the settings message with the updated format
