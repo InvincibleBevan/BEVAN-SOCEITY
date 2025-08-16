@@ -241,12 +241,12 @@ async function connectToWA() {
     };
 
     //================ownerreact==============
-    if (senderNumber === ownerNumber[0] && !isReact) {
+    /*if (senderNumber === ownerNumber[0] && !isReact) {
       // Only react once per message, if not already reacted
       m.react('👑');
       m.react('🦋');
       m.react('🎀');
-    }
+    }*/
 
     //==========================public react===============//
     // Auto React (for everyone except bot)
