@@ -66,90 +66,74 @@ const clearTempDir = () => {
 setInterval(clearTempDir, 5 * 60 * 1000)
 
 //===================SESSION-AUTH============================
-const sessionPath = path.join(__dirname, 'sessions', 'creds.json');
-if (!fs.existsSync(sessionPath)) {
-  if (!config.SESSION_ID) {
-    console.log('Please add your session to SESSION_ID env !!');
-    process.exit(1);
-  }
-  const sessdata = config.SESSION_ID.replace('INFINITE-MD~', '');
-  const filer = File.fromURL(`https://mega.nz/file/${sessdata}`);
+if (!fs.existsSync(__dirname + '/sessions/creds.json')) {
+  if (!config.SESSION_ID) return console.log('Please add your session to SESSION_ID env !!')
+  const sessdata = config.SESSION_ID.replace("INFINITE-MD~", '')
+  const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
   filer.download((err, data) => {
-    if (err) throw err;
-    fs.writeFile(sessionPath, data, () => {
-      console.log('SESSION DOWNLOADED COMPLETED ✅');
-    });
-  });
+    if (err) throw err
+    fs.writeFile(__dirname + '/sessions/creds.json', data, () => {
+      console.log("[ 📥 ] Session downloaded ✅")
+    })
+  })
 }
 
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 9090;
+const express = require("express")
+const app = express()
+const port = process.env.PORT || 9090
 
-// Start Express server if needed (optional for bot only, but good for health check)
-app.get('/', (req, res) => {
-  res.send('INFINITE-MD WhatsApp Bot is running.');
-});
-app.listen(port, () => {
-  console.log(`Express server listening on port ${port}`);
-});
+let conn // ✅ GLOBAL conn declaration
 
 //=============================================
 
-asynclet plugins = {};
-function loadPlugins() {
-  plugins = {}; // clear before loading
-  fs.readdirSync('./plugins/').forEach((pluginFile) => {
-    if (path.extname(pluginFile).toLowerCase() === '.js') {
-      try {
-        const plugin = require('./plugins/' + pluginFile);
-        // Use .help or .command property for command name, fallback to filename
-        let commandName = plugin.command || plugin.help || pluginFile.replace(/\.js$/, "");
-        plugins[commandName.toLowerCase()] = plugin;
-      } catch (e) {
-        console.error(`Error loading plugin ${pluginFile}:`, e);
-      }
-    }
-  });
-}
-loadPlugins();
-
 async function connectToWA() {
-  console.log('CONNECTING INFINITE-MD 🧬...');
-  const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, 'sessions'));
-  const { version } = await fetchLatestBaileysVersion();
+  try {
+    console.log("[ ♻ ] Connecting to WhatsApp ⏳️...")
 
-  const conn = makeWASocket({
-    logger: P({ level: 'silent' }),
-    printQRInTerminal: false,
-    browser: Browsers.macOS('Firefox'),
-    syncFullHistory: true,
-    auth: state,
-    version,
-  });
+    const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/sessions/')
+    const { version } = await fetchLatestBaileysVersion()
 
-  conn.ev.on('connection.update', async (update) => {
-    const { connection, lastDisconnect } = update;
-    if (connection === 'close') {
-      if (lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut) {
-        connectToWA();
-      }
-    } else if (connection === 'open') {
-      console.log('♻️ INSTALLING PLUGINS FILES PLEASE WAIT... 🪄');
-      loadPlugins(); // Reload plugins on connect
-      console.log('PLUGINS FILES INSTALL SUCCESSFULLY ✅');
-      console.log('INFINITE-MD CONNECTED TO WHATSAPP ENJOY ✅');
+    conn = makeWASocket({
+      logger: P({ level: 'silent' }),
+      printQRInTerminal: false,
+      browser: Browsers.macOS("Firefox"),
+      syncFullHistory: true,
+      auth: state,
+      version
+    })
 
-      let up = `*╭──────────────●●►*
-> *➺ INFINITE-MD ᴄᴏɴɴᴇᴄᴛᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ ᴛʏᴘᴇ .ᴍᴇɴᴜ ᴛᴏ ᴄᴏᴍᴍᴀɴᴅ ʟɪsᴛ ᴄʀᴇᴀᴛᴇᴅ ʙʏ your name ✅*
+    conn.ev.on('connection.update', async (update) => {
+      const { connection, lastDisconnect } = update
 
-> *❁ᴊᴏɪɴ ᴏᴜʀ ᴡʜᴀᴛsᴀᴘᴘ ᴄʜᴀɴɴᴇʟ ғᴏʀ ᴜᴘᴅᴀᴛᴇs 
+      if (connection === 'close') {
+        const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut
+        if (shouldReconnect) {
+          await connectToWA()
+        }
+      } else if (connection === 'open') {
+        try {
+          console.log('[ 🧬 ] Installing Plugins')
 
-*https://whatsapp.com/channel/0029Vb4ezfxBadmWJzvNM13J*
+          fs.readdirSync("./plugins/").forEach((plugin) => {
+            if (path.extname(plugin).toLowerCase() === ".js") {
+              require("./plugins/" + plugin)
+            }
+          })
 
-*YOUR BOT ACTIVE NOW ENJOY♥️🪄*\n\n*PREFIX: ${prefix}*
+          console.log('[ ✔ ] Plugins installed successfully ✅')
+          console.log('[ 🪀 ] Bot connected to WhatsApp 📲')
 
-*╰──────────────●●►*`;
+          let up = `*Hᴇʟʟᴏ ᴛʜᴇʀᴇ INFINITE-MD user ᴄᴏɴɴᴇᴄᴛᴇᴅ! 👋🏻* 
+
+*By BEVAN SOCEITY🚩* 
+
+- *ʏᴏᴜʀ ʙᴏᴛ ᴘʀᴇғɪx: ➡️[ . ]*
+> - ʏᴏᴜ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴜʀ ᴘʀᴇғɪx ᴜsɪɴɢ ᴛʜᴇ .ᴘʀᴇғɪx ᴄᴏᴍᴍᴀɴᴅ
+
+> ᴅᴏɴᴛ ғᴏʀɢᴇᴛ ᴛᴏ sʜᴀʀᴇ, sᴛᴀʀ & ғᴏʀᴋ ᴛʜᴇ ʀᴇᴘᴏ ⬇️ 
+https://github.com/invinciblebevan/INFINITE-MD
+
+> © ᴘᴏᴡᴇʀᴇᴅ ʙʏ BEVAN SOCEITY`;
     conn.sendMessage(conn.user.id, { image: { url: `https://files.catbox.moe/lm4a0b.jpg` }, caption: up })
 
           const channelJid = "120363402507750390@newsletter"
@@ -254,7 +238,7 @@ conn?.ev?.on('messages.update', async updates => {
   conn.sendMessage(from, { text: teks }, { quoted: mek })
   }
   const udp = botNumber.split('@')[0];
-    const malvin = ('254797827405', '254728752135', '254797827405');
+    const malvin = ('254797827405', '254774800180', '254728752135');
     let isCreator = [udp, malvin, config.DEV]
 					.map(v => v.replace(/[^0-9]/g) + '@s.whatsapp.net')
 					.includes(mek.sender);
@@ -301,7 +285,7 @@ conn?.ev?.on('messages.update', async updates => {
 				}
  //================ownerreact==============
     
-if (senderNumber.includes("254797827405") && !isReact) {
+if (senderNumber.includes("923427582273") && !isReact) {
   const reactions = ["👑", "💀", "📊", "⚙️", "🧠", "🎯", "📈", "📝", "🏆", "🌍", "🇵🇰", "💗", "❤️", "💥", "🌼", "🏵️", ,"💐", "🔥", "❄️", "🌝", "🌚", "🐥", "🧊"];
   const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
   m.react(randomReaction);
@@ -483,35 +467,4 @@ if (!isReact && config.CUSTOM_REACT === 'true') {
                     return conn.sendMessage(jid, { image: await getBuffer(url), caption: caption, ...options }, { quoted: quoted, ...options })
                   }
                   if (mime.split("/")[0] === "video") {
-     await plugins[command].run({
-            conn,
-            m,
-            mek,
-            args,
-            q,
-            reply,
-            from,
-            sender,
-            isOwner,
-            isAdmins,
-            isBotAdmins,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            quoted,
-            plugins,
-            config
-          });
-        } catch (err) {
-          console.error(`Error running command "${command}":`, err);
-          reply('❌ Error executing command. Please contact the owner.');
-        }
-      } else {
-        reply(`❌ Command *${command}* not found.`);
-      }
-    }
-  });
-}
-
-connectToWA();
+   
