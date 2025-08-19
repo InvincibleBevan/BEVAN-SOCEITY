@@ -96,55 +96,60 @@ app.listen(port, () => {
 
 //=============================================
 
+asynclet plugins = {};
+function loadPlugins() {
+  plugins = {}; // clear before loading
+  fs.readdirSync('./plugins/').forEach((pluginFile) => {
+    if (path.extname(pluginFile).toLowerCase() === '.js') {
+      try {
+        const plugin = require('./plugins/' + pluginFile);
+        // Use .help or .command property for command name, fallback to filename
+        let commandName = plugin.command || plugin.help || pluginFile.replace(/\.js$/, "");
+        plugins[commandName.toLowerCase()] = plugin;
+      } catch (e) {
+        console.error(`Error loading plugin ${pluginFile}:`, e);
+      }
+    }
+  });
+}
+loadPlugins();
+
 async function connectToWA() {
-  try {
-    console.log("[ ♻ ] Connecting to WhatsApp ⏳️...")
+  console.log('CONNECTING INFINITE-MD 🧬...');
+  const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, 'sessions'));
+  const { version } = await fetchLatestBaileysVersion();
 
-    const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/sessions/')
-    const { version } = await fetchLatestBaileysVersion()
+  const conn = makeWASocket({
+    logger: P({ level: 'silent' }),
+    printQRInTerminal: false,
+    browser: Browsers.macOS('Firefox'),
+    syncFullHistory: true,
+    auth: state,
+    version,
+  });
 
-    conn = makeWASocket({
-      logger: P({ level: 'silent' }),
-      printQRInTerminal: false,
-      browser: Browsers.macOS("Firefox"),
-      syncFullHistory: true,
-      auth: state,
-      version
-    })
+  conn.ev.on('connection.update', async (update) => {
+    const { connection, lastDisconnect } = update;
+    if (connection === 'close') {
+      if (lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut) {
+        connectToWA();
+      }
+    } else if (connection === 'open') {
+      console.log('♻️ INSTALLING PLUGINS FILES PLEASE WAIT... 🪄');
+      loadPlugins(); // Reload plugins on connect
+      console.log('PLUGINS FILES INSTALL SUCCESSFULLY ✅');
+      console.log('INFINITE-MD CONNECTED TO WHATSAPP ENJOY ✅');
 
-    conn.ev.on('connection.update', async (update) => {
-      const { connection, lastDisconnect } = update
+      let up = `*╭──────────────●●►*
+> *➺ INFINITE-MD ᴄᴏɴɴᴇᴄᴛᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ ᴛʏᴘᴇ .ᴍᴇɴᴜ ᴛᴏ ᴄᴏᴍᴍᴀɴᴅ ʟɪsᴛ ᴄʀᴇᴀᴛᴇᴅ ʙʏ your name ✅*
 
-      if (connection === 'close') {
-        const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut
-        if (shouldReconnect) {
-          await connectToWA()
-        }
-      } else if (connection === 'open') {
-        try {
-          console.log('[ 🧬 ] Installing Plugins')
+> *❁ᴊᴏɪɴ ᴏᴜʀ ᴡʜᴀᴛsᴀᴘᴘ ᴄʜᴀɴɴᴇʟ ғᴏʀ ᴜᴘᴅᴀᴛᴇs 
 
-          fs.readdirSync("./plugins/").forEach((plugin) => {
-            if (path.extname(plugin).toLowerCase() === ".js") {
-              require("./plugins/" + plugin)
-            }
-          })
+*https://whatsapp.com/channel/0029Vb4ezfxBadmWJzvNM13J*
 
-          console.log('[ ✔ ] Plugins installed successfully ✅')
-          console.log('[ 🪀 ] Bot connected to WhatsApp 📲')
+*YOUR BOT ACTIVE NOW ENJOY♥️🪄*\n\n*PREFIX: ${prefix}*
 
-          let up = `*Hᴇʟʟᴏ ᴛʜᴇʀᴇ INFINITE MD ᴄᴏɴɴᴇᴄᴛᴇᴅ! 👋🏻* 
-
-*ᴋᴇᴇᴘ ᴏɴ ᴜsɪɴɢ INFINITE-MD🚩* 
-
-
-- *ʏᴏᴜʀ ʙᴏᴛ ᴘʀᴇғɪx: ➡️[ . ]*
-> - ʏᴏᴜ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴜʀ ᴘʀᴇғɪx ᴜsɪɴɢ ᴛʜᴇ .ᴘʀᴇғɪx ᴄᴏᴍᴍᴀɴᴅ
-
-> ᴅᴏɴᴛ ғᴏʀɢᴇᴛ ᴛᴏ sʜᴀʀᴇ, sᴛᴀʀ & ғᴏʀᴋ ᴛʜᴇ ʀᴇᴘᴏ ⬇️ 
-https://github.com/invinciblebevan/INFINITE-MD
-
-> © ᴘᴏᴡᴇʀᴇᴅ ʙʏ BEVAN SOCEITY`;
+*╰──────────────●●►*`;
     conn.sendMessage(conn.user.id, { image: { url: `https://files.catbox.moe/lm4a0b.jpg` }, caption: up })
 
           const channelJid = "120363402507750390@newsletter"
