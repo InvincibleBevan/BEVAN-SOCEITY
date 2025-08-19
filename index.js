@@ -66,24 +66,33 @@ const clearTempDir = () => {
 setInterval(clearTempDir, 5 * 60 * 1000)
 
 //===================SESSION-AUTH============================
-
-if (!fs.existsSync(__dirname + '/sessions/creds.json')) {
-  if (!config.SESSION_ID) return console.log('Please add your session to SESSION_ID env !!')
-  const sessdata = config.SESSION_ID.replace("INFINITE-MD~", '')
-  const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
+const sessionPath = path.join(__dirname, 'sessions', 'creds.json');
+if (!fs.existsSync(sessionPath)) {
+  if (!config.SESSION_ID) {
+    console.log('Please add your session to SESSION_ID env !!');
+    process.exit(1);
+  }
+  const sessdata = config.SESSION_ID.replace('INFINITE-MD~', '');
+  const filer = File.fromURL(`https://mega.nz/file/${sessdata}`);
   filer.download((err, data) => {
-    if (err) throw err
-    fs.writeFile(__dirname + '/sessions/creds.json', data, () => {
-      console.log("[ 📥 ] Session downloaded ✅")
-    })
-  })
+    if (err) throw err;
+    fs.writeFile(sessionPath, data, () => {
+      console.log('SESSION DOWNLOADED COMPLETED ✅');
+    });
+  });
 }
 
-const express = require("express")
-const app = express()
-const port = process.env.PORT || 9090
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 9090;
 
-let conn // ✅ GLOBAL conn declaration
+// Start Express server if needed (optional for bot only, but good for health check)
+app.get('/', (req, res) => {
+  res.send('INFINITE-MD WhatsApp Bot is running.');
+});
+app.listen(port, () => {
+  console.log(`Express server listening on port ${port}`);
+});
 
 //=============================================
 
