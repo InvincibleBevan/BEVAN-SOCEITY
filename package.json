@@ -1,23 +1,28 @@
+
+
 {
-  "name": "INFINITE-MD",
-  "version": "3.0.0",
+  "name": "✦『INFINITE-MD』✦",
+  "version": "0.0.5",
   "description": "A WhatsApp Bot Created By BEVAN SOCEITY",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --deep-monitoring --attach --name INFINITE-MD",
-    "stop": "pm2 stop INFINITE-MD",
-    "restart": "pm2 restart Botne-MD"
+    "start": "pm2 start index.js --deep-monitoring --attach --name lite",
+    "stop": "pm2 stop lite",
+    "restart": "pm2 restart lite"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "6.6.0",
+       "@whiskeysockets/baileys": "npm:baileys-pro@latest",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@dark-yasiya/yt-dl.js": "1.0.5",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@vitalets/google-translate-api": "^9.2.0",
+    "@dark-yasiya/scrap":"1.0.1",    
     "pino": "^7.0.5",
-    "pm2": "^5.2.0",
+    "pm2": "^6.0.5",
     "util": "^0.12.4",
+    "jimp": "^0.16.1",
     "express": "latest",
+    "moment-timezone": "^0.5.45",
     "axios": "^1.2.5",
     "crypto-digest-sync": "^1.0.0",
     "crypto-js": "latest",
@@ -33,6 +38,7 @@
     "node-fetch": "^2.6.1",
     "btch-downloader": "^2.2.9",
     "megajs": "^1.1.0",
+    "pdfkit": "^0.14.0",
     "wa_set_pkg": "1.0.5",
     "wa-sticker-formatter": "^4.4.4",
     "path": "^0.12.7",
