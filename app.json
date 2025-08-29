@@ -1,0 +1,78 @@
+{
+  "name": "KANGO-XMD",
+  "version": "2.4.0",
+  "description": "KANGO-XMD, the best WhatsApp Bot in Ghana",
+  "logo": "https://i.imgur.com/GVW7aoD.jpeg",
+  "keywords": ["whatsapp", "bot", "md"],
+  "repository": "https://github.com/official_kango/KANGO-XMD-V2.git",
+  "stack": "container",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "env": {
+    "SESSION_ID": {
+      "description": "Enter your KANGO-XMD session id here; must start with KANGO~",
+      "value": "",
+      "required": false
+    },
+    "BOT_NAME": {
+      "description": "Enter your bot name here",
+      "value": "KANGO-XMD",
+      "required": false
+    },
+    "OWNER_NUMBER": {
+      "description": "Enter your number here, starting with country code E.g 233xxxxxxxx",
+      "value": "",
+      "required": true
+    },
+    "OWNER_NAME": {
+      "description": "owner name",
+      "value": "",
+      "required": true
+    },
+    "STICKER_PACK_NAME": {
+      "description": "Sticker pack name",
+      "value": "KANGO",
+      "required": false
+    },
+    "STICKER_AUTHOR_NAME": {
+      "description": "Sticker author name",
+      "value": "KANGO",
+      "required": false
+    },
+    "HEROKU_API_KEY": {
+      "description": "Enter heroku API key here",
+      "value": "",
+      "required": false
+    },
+    "HEROKU_APP_NAME": {
+      "description": "Enter exactly the same app name you've entered above.",
+      "value": "",
+      "required": false
+    },
+    "TIMEZONE": {
+      "description": "Enter your timezone here. Google or don't edit if you don't know!",
+      "value": "Africa/Accra",
+      "required": false
+    },
+   "GITHUB_TOKEN": {
+  "description": "IMPORTANT: Follow these steps to generate your GitHub token correctly(Bot will not save settings without it!). Go to https://github.com/settings/tokens, select 'Tokens (classic)', then tap 'Generate new token' and select 'Generate new token (classic)'. Enter any note, choose 'No expiration', and under 'Select scopes', tick 'repo'. Scroll down, generate the token, and copy it. Paste it here. If using a single token for multiple bots, change the owner number to avoid settings mixups.",
+  "value": "",
+  "required": false
+}
+},
+    "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/DuckyTeam/heroku-buildpack-imagemagick.git"
+    },
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest"
+    },
+    {
+      "url": "https://github.com/clhuang/heroku-buildpack-webp-binaries.git"
+    }
+  ]
+}
