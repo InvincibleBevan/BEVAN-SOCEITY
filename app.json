@@ -1,38 +1,38 @@
 {
-  "name": "KANGO-XMD",
+  "name": "INFINITE-MD",
   "version": "2.4.0",
-  "description": "KANGO-XMD, the best WhatsApp Bot in Ghana",
+  "description": "MOVING REGARDLES",
   "logo": "https://i.imgur.com/GVW7aoD.jpeg",
   "keywords": ["whatsapp", "bot", "md"],
-  "repository": "https://github.com/official_kango/KANGO-XMD-V2.git",
+  "repository": "https://github.com/invinciblebevan/INFINITE-MD",
   "stack": "container",
   "scripts": {
     "start": "node index.js"
   },
   "env": {
     "SESSION_ID": {
-      "description": "Enter your KANGO-XMD session id here; must start with KANGO~",
+      "description": "Enter your INFINITE-MD session id here; must start with INFINITE-MD~",
       "value": "",
       "required": false
     },
     "BOT_NAME": {
       "description": "Enter your bot name here",
-      "value": "KANGO-XMD",
+      "value": "INFINITE-MD",
       "required": false
     },
     "OWNER_NUMBER": {
-      "description": "Enter your number here, starting with country code E.g 233xxxxxxxx",
-      "value": "",
+      "description": "Enter your number here, starting with country code E.g 254xxxxxxxx",
+      "value": "254797827405",
       "required": true
     },
     "OWNER_NAME": {
       "description": "owner name",
-      "value": "",
+      "value": "BEVAN SOCEITY",
       "required": true
     },
     "STICKER_PACK_NAME": {
       "description": "Sticker pack name",
-      "value": "KANGO",
+      "value": "INFINITE-MD",
       "required": false
     },
     "STICKER_AUTHOR_NAME": {
@@ -52,7 +52,7 @@
     },
     "TIMEZONE": {
       "description": "Enter your timezone here. Google or don't edit if you don't know!",
-      "value": "Africa/Accra",
+      "value": "Africa/Nairobi",
       "required": false
     },
    "GITHUB_TOKEN": {
